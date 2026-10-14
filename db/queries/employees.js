@@ -1,23 +1,26 @@
 import db from "#db/client";
 
-/** @returns the employee created according to the provided details */
+/**
+ * Creates a new employee
+ */
 export async function createEmployee({ name, birthday, salary }) {
   const sql = `
-  INSERT INTO employees (name, birthday, salary)
-  VALUE ($1, $2, $3)
-  RETURNING *;
+    INSERT INTO employees (name, birthday, salary)
+    VALUES ($1, $2, $3)
+    RETURNING *;
   `;
+
   const { rows } = await db.query(sql, [name, birthday, salary]);
 
   return rows[0];
 }
 
-// === Part 2 ===
-
-/** @returns all employees */
+/**
+ * Returns all employees
+ */
 export async function getEmployees() {
   const sql = `
-    SELECT * FROM employees; 
+    SELECT * FROM employees;
   `;
 
   const { rows } = await db.query(sql);
@@ -26,13 +29,12 @@ export async function getEmployees() {
 }
 
 /**
- * @returns the employee with the given id
- * @returns undefined if employee with the given id does not exist
+ * Returns an employee by ID
  */
 export async function getEmployee(id) {
   const sql = `
-  SELECT * FROM employees
-  WHERE id - $1;
+    SELECT * FROM employees
+    WHERE id = $1;
   `;
 
   const { rows } = await db.query(sql, [id]);
@@ -41,17 +43,16 @@ export async function getEmployee(id) {
 }
 
 /**
- * @returns the updated employee with the given id
- * @returns undefined if employee with the given id does not exist
+ * Updates an existing employee
  */
 export async function updateEmployee({ id, name, birthday, salary }) {
   const sql = `
-  UPDATE employees
-  SET name = $1,
-      birthday = $2,
-      salary = $3
-  WHERE id = $4
-  RETURNING *;
+    UPDATE employees
+    SET name = $1,
+        birthday = $2,
+        salary = $3
+    WHERE id = $4
+    RETURNING *;
   `;
 
   const { rows } = await db.query(sql, [name, birthday, salary, id]);
@@ -60,14 +61,13 @@ export async function updateEmployee({ id, name, birthday, salary }) {
 }
 
 /**
- * @returns the deleted employee with the given id
- * @returns undefined if employee with the given id does not exist
+ * Deletes an employee by ID
  */
 export async function deleteEmployee(id) {
   const sql = `
-  DELETE FROM employees
-  WHERE id = $1
-  RETURNING *;
+    DELETE FROM employees
+    WHERE id = $1
+    RETURNING *;
   `;
 
   const { rows } = await db.query(sql, [id]);
